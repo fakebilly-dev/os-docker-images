@@ -1,16 +1,16 @@
-name: Ubuntu OS Docker Workflow
+name: Ubuntu Beta Workshop Image Desktop Workflow
 
 on:
   workflow_dispatch:
 
 env:
-  DOCKERHUB_IMAGE: fakebilly/ubuntu:20.04-os
-  GCHR_DOCKERHUB_IMAGE: ubuntu:20.04-os
-  ALI_DOCKERHUB_IMAGE: monet/ubuntu:20.04-os
+  DOCKERHUB_IMAGE: fakebilly/ubuntu:20.04-beta
+  GCHR_DOCKERHUB_IMAGE: ubuntu:20.04-beta
+  ALI_DOCKERHUB_IMAGE: monet/ubuntu:20.04-beta
 
 jobs:
   build:
-    name: OS Ubuntu Image Build
+    name: Ubuntu Beta Docker Build
     runs-on: ubuntu-20.04
 
     steps:
@@ -44,7 +44,7 @@ jobs:
             linux/amd64
           build-args:
           context: .
-          file: Dockerfile
+          file: dockerfile-ubuntu
           no-cache: true
           push: true
           tags: ${{ env.DOCKERHUB_IMAGE }}
@@ -60,4 +60,7 @@ jobs:
           docker tag ${{ env.DOCKERHUB_IMAGE }} ${{ secrets.ALI_DOCKERHUB_REGISTRY }}/${{ env.ALI_DOCKERHUB_IMAGE }}
           docker push ${{ secrets.ALI_DOCKERHUB_REGISTRY }}/${{ env.ALI_DOCKERHUB_IMAGE }}
           docker rmi ${{ secrets.ALI_DOCKERHUB_REGISTRY }}/${{ env.ALI_DOCKERHUB_IMAGE }}
+
+      - name: Remove Docker image
+        run: |
           docker rmi ${{ env.DOCKERHUB_IMAGE }}
